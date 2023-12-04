@@ -1,0 +1,78 @@
+[
+    {
+      "category": "nature",
+      "name": "nature1",
+      "imagePath": "./Assets/nature1.jpg"
+    },
+    {
+      "category": "nature",
+      "name": "nature2",
+      "imagePath": "./Assets/nature2.jpg"
+    },
+    {
+      "category": "nature",
+      "name": "nature3",
+      "imagePath": "./Assets/nature3.jpg"
+    },
+    {
+      "category": "nature",
+      "name": "nature4",
+      "imagePath": "./Assets/nature4.jpg"
+    },
+    {
+      "category": "nature",
+      "name": "nature5",
+      "imagePath": "./Assets/nature5.jpg"
+    },
+    {
+      "category": "sports",
+      "name": "sports1",
+      "imagePath": "./Assets/sports1.jpg"
+    },
+    {
+      "category": "sports",
+      "name": "sports2",
+      "imagePath": "./Assets/sports2.jpg"
+    },
+    {
+      "category": "sports",
+      "name": "sports3",
+      "imagePath": "./Assets/sports3.jpg"
+    },
+    {
+      "category": "sports",
+      "name": "sports4",
+      "imagePath": "./Assets/sports4.jpg"
+    },
+    {
+      "category": "sports",
+      "name": "sports5",
+      "imagePath": "./Assets/sports5.jpg"
+    },
+    {
+      "category": "technology",
+      "name": "tech1",
+      "imagePath": "./Assets/tech1.jpg"
+    },
+    {
+      "category": "technology",
+      "name": "tech2",
+      "imagePath": "./Assets/tech2.jpg"
+    },
+    {
+      "category": "technology",
+      "name": "tech3",
+      "imagePath": "./Assets/tech3.jpg"
+    },
+    {
+      "category": "technology",
+      "name": "tech4",
+      "imagePath": "./Assets/tech4.jpg"
+    },
+    {
+      "category": "technology",
+      "name": "tech5",
+      "imagePath": "./Assets/tech5.jpg"
+    }
+  ]
+  

@@ -1,0 +1,102 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+.container {
+    position: relative;
+    min-height: 100vh;
+    max-width: 1600px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.container .search-box {
+    position: relative;
+    height: 50px;
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 40px;
+}
+
+.search-box input {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    outline: none;
+    border: none;
+    background-color: #323334;
+    padding: 0 15px 0 45px;
+    color: #fff;
+    font-size: 20px;
+    border-radius: 6px;
+}
+
+.search-box i {
+    position: absolute;
+    z-index: 2;
+    color: #999;
+    top: 50%;
+    left: 15px;
+    font-size: 22px;
+    transform: translateY(-50%);
+}
+
+.container .images {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.container .images .image-box {
+    position: relative;
+    height: 400px;
+    width: 350px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 20px;
+    transition: transform 0.2s linear;
+    cursor: pointer;
+}
+
+.container .images .image-box img {
+    height: 100%;
+    width: 100%;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.container .images .image-box:hover img {
+    transform: scale(1.1);
+    
+}
+
+.container .images .image-box h6 {
+    display: none;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination-button {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.pagination-button.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
