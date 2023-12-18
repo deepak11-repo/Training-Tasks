@@ -73,3 +73,12 @@
     border-color: #282c2d;
     color: #fff;
 }
+
+.metadata {
+    width: 100%;
+    padding: 2% 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: red;
+}

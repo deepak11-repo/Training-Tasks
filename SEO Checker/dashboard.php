@@ -8,6 +8,8 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <title>SEO Insights Pro</title>
     <link rel="stylesheet" href="./assets/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 </head>
 
 <body>
@@ -16,12 +18,12 @@
     <nav class="navbar">
         <div class="container-fluid">
             <a class="navbar-brand navbarTitle" href="#">
-                <img src="./assets/navLogo2.png" alt="Logo" width="40" height="40"
+                <img src="./assets/images/navLogo2.png" alt="Logo" width="40" height="40"
                     class="d-inline-block align-text-top">
                 SEO Insights PRO
             </a>
-            <button class="btn  btn-shadow custom-btn-color" id="logoutBtn">Logout&nbsp;&nbsp;<svg xmlns="http://www.w3.org/2000/svg"
-                    width="24" height="24" viewBox="0 0 24 24"
+            <button class="btn  btn-shadow custom-btn-color" id="logoutBtn">Logout&nbsp;&nbsp;<svg
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                     style="fill: rgba(255, 255, 255, 1);transform:;msFilter:;">
                     <path d="m2 12 5 4v-3h9v-2H7V8z"></path>
                     <path
@@ -45,8 +47,9 @@
         <div class="searchURL">
             <form>
                 <div class="input-group mb-2 searchBar">
-                    <input type="text" class="form-control" placeholder="Enter website URL "
-                        aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <input type="text" class="form-control" placeholder="Enter website URL e.g. https://www.example.com"
+                        aria-label="Recipient's username" aria-describedby="button-addon2" name="urlInput"
+                        id="urlInput">
                     <button class="btn btn-outline-secondary search-btn" type="button" id="button-addon2">Analyze
                         SEO</button>
                 </div>
@@ -54,12 +57,52 @@
         </div>
     </div>
 
+    <!-- Get Meta Data -->
+    <div id="metadataResult">
+        <!-- Metadata will be displayed here -->
+        <!-- Page Rank will be displayed here -->
+    </div>
+
 </body>
 
+<!-- Logout Button Functiionality -->
 <script>
-        document.getElementById("logoutBtn").addEventListener("click", function() {
-            window.location.href = "logout.php";
-        });
-    </script>
+     document.getElementById("button-addon2").addEventListener("click", function () {
+        fetchMetadata();
+    });
+    document.getElementById("logoutBtn").addEventListener("click", function () {
+        window.location.href = "logout.php";
+    });
+
+    // Get Meta Data
+    async function fetchMetadata() {
+        const urlInput = document.getElementById('urlInput').value;
+        const metadataResult = document.getElementById('metadataResult');
+        try {
+            const response = await fetch(`https://api.linkpreview.net/?key=4bc9c6686ec0c3aa359f1e09f01aeac0&q=${encodeURIComponent(urlInput)}`);
+            const data = await response.json();
+            metadataResult.innerHTML =
+                `
+                <div style="width: 100%; padding: 2% 5%; display: flex;">
+                    <div class="card" style="width: 18rem;">
+                        <img src="${data.image}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">${data.title}</h5>
+                            <p class="card-text">${data.description}</p>
+                        </div>
+                        <div class="card-body">
+                            <button onclick="window.open('${data.url}', '_blank');" class="card-link btn btn-outline-secondary search-btn">Click here to know more</button>
+                        </div>
+                    </div>
+                </div>
+
+            `;
+        } catch (error) {
+            console.error('Error fetching metadata:', error);
+            metadataResult.innerHTML = '<p>Error fetching metadata. Please try again.</p>';
+        }
+    }
+
+</script>
 
 </html>
