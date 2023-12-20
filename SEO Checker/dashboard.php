@@ -45,12 +45,56 @@
             See if your pages are optimized and get actionable data if they aren't.
         </div>
         <div class="searchURL">
-            <form>
+
+            <?php
+            $pageRankInteger = $rank = $domain = $lastUpdated = $error = $image = $title = $description = '';
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $inpUrl = $_POST['urlInput'];
+
+                //Meta Data Information
+                $murl = 'https://api.linkpreview.net/?key=4bc9c6686ec0c3aa359f1e09f01aeac0&q=' . urlencode($inpUrl);
+                $response = file_get_contents($murl);
+                $data = json_decode($response, true);
+                $image = $data['image'];
+                $title = $data['title'];
+                $description = $data['description'];
+                $furl = $data['url'];
+
+
+                //Page Rank 
+                $url = 'https://openpagerank.com/api/v1.0/getPageRank';
+                $query = http_build_query(array(
+                    'domains' => array(
+                        $inpUrl
+                    )
+                ));
+                $url = $url . '?' . $query;
+                $ch = curl_init();
+                $headers = ['API-OPR: 4sgkogww408owwgw0080woggw8wk4csc4gkwk80c'];
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $output = curl_exec($ch);
+                curl_close($ch);
+                $response = json_decode($output, true);
+                if ($response['status_code'] == 200) {
+                    $responseData = $response['response'][0];
+                    $pageRankInteger = $responseData['page_rank_integer'];
+                    $rank = $responseData['rank'];
+                    $domain = $responseData['domain'];
+                    $lastUpdated = $response['last_updated'];
+                } else {
+                    $error = 'Error: ' . $response['error'];
+                }
+            }
+            ?>
+
+            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <div class="input-group mb-2 searchBar">
                     <input type="text" class="form-control" placeholder="Enter website URL e.g. https://www.example.com"
                         aria-label="Recipient's username" aria-describedby="button-addon2" name="urlInput"
                         id="urlInput">
-                    <button class="btn btn-outline-secondary search-btn" type="button" id="button-addon2">Analyze
+                    <button class="btn btn-outline-secondary search-btn" type="submit" id="button-addon2">Analyze
                         SEO</button>
                 </div>
             </form>
@@ -58,51 +102,97 @@
     </div>
 
     <!-- Get Meta Data -->
-    <div id="metadataResult">
-        <!-- Metadata will be displayed here -->
-        <!-- Page Rank will be displayed here -->
-    </div>
+    <!-- Condition - Only display the html content only when the fetched data is ready -->
+    <?php if (!empty($image) && !empty($title) && !empty($description) && !empty($furl) && !empty($pageRankInteger) && !empty($rank) && !empty($domain) && !empty($lastUpdated)): ?>
+        <div id="metadataResult"
+            style="width: 100%; display: flex; align-items: center; justify-content: center; padding-bottom: 5%;">
+            <div style="width: 35%; margin: auto;">
+                <div class="card">
+                    <img src="<?php echo $image; ?>" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <table class="table">
+                            <tbody style="text-align: justify">
+                                <tr>
+                                    <th scope="row">Domain Name</th>
+                                    <td>
+                                        <?php echo $domain; ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Website Title</th>
+                                    <td>
+                                        <?php echo $title; ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Website Description</th>
+                                    <td>
+                                        <?php echo $description; ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Page Rank</th>
+                                    <td>
+                                        <?php
+                                        function updateProgressBar($score)
+                                        {
+                                            $percentage = ($score / 10) * 100;
+                                            echo '
+                                                    <div class="progress">
+                                                        <div class="progress-bar" role="progressbar" style="width: ' . $percentage . '%;" aria-valuenow="' . $score . '" aria-valuemin="0" aria-valuemax="10"></div>
+                                                    </div>
+                                                    <p class="mt-3">' . $score . '/10</p>';
+                                        }
+                                        updateProgressBar($pageRankInteger);
+                                        ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">SERP</th>
+                                    <td>
+                                        <?php echo $rank; ?>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button onclick="window.open('<?php echo $furl; ?>', '_blank');"
+                        class="card-link btn btn-outline-secondary search-btn"
+                        style="width:60%; margin: auto; margin-bottom: 3%;">Click here to know more&nbsp;&nbsp;<svg
+                            xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
+                            <path fill="#ffffff"
+                                d="M432 320H400a16 16 0 0 0 -16 16V448H64V128H208a16 16 0 0 0 16-16V80a16 16 0 0 0 -16-16H48A48 48 0 0 0 0 112V464a48 48 0 0 0 48 48H400a48 48 0 0 0 48-48V336A16 16 0 0 0 432 320zM488 0h-128c-21.4 0-32.1 25.9-17 41l35.7 35.7L135 320.4a24 24 0 0 0 0 34L157.7 377a24 24 0 0 0 34 0L435.3 133.3 471 169c15 15 41 4.5 41-17V24A24 24 0 0 0 488 0z" />
+                        </svg></button>
+                    <div class="card-footer">
+                        <small class="text-body-secondary">Last Updated&nbsp;
+                            <?php echo $lastUpdated; ?>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
 
 </body>
 
 <!-- Logout Button Functiionality -->
 <script>
-     document.getElementById("button-addon2").addEventListener("click", function () {
-        fetchMetadata();
-    });
+    let res = document.getElementById("metadataResult");
     document.getElementById("logoutBtn").addEventListener("click", function () {
         window.location.href = "logout.php";
     });
-
-    // Get Meta Data
-    async function fetchMetadata() {
-        const urlInput = document.getElementById('urlInput').value;
-        const metadataResult = document.getElementById('metadataResult');
-        try {
-            const response = await fetch(`https://api.linkpreview.net/?key=4bc9c6686ec0c3aa359f1e09f01aeac0&q=${encodeURIComponent(urlInput)}`);
-            const data = await response.json();
-            metadataResult.innerHTML =
-                `
-                <div style="width: 100%; padding: 2% 5%; display: flex;">
-                    <div class="card" style="width: 18rem;">
-                        <img src="${data.image}" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">${data.title}</h5>
-                            <p class="card-text">${data.description}</p>
-                        </div>
-                        <div class="card-body">
-                            <button onclick="window.open('${data.url}', '_blank');" class="card-link btn btn-outline-secondary search-btn">Click here to know more</button>
-                        </div>
-                    </div>
-                </div>
-
-            `;
-        } catch (error) {
-            console.error('Error fetching metadata:', error);
-            metadataResult.innerHTML = '<p>Error fetching metadata. Please try again.</p>';
-        }
-    }
-
 </script>
 
 </html>
