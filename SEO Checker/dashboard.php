@@ -77,7 +77,7 @@
                 $inpUrl = $_POST['urlInput'];
 
                 //Meta Data Information
-                $murl = 'https://api.linkpreview.net/?key=4bc9c6686ec0c3aa359f1e09f01aeac0&q=' . urlencode($inpUrl);
+                $murl = 'https://api.linkpreview.net/?key=ADD_YOUR_API_KEY&q=' . urlencode($inpUrl);
                 $response = file_get_contents($murl);
                 $data = json_decode($response, true);
                 $image = $data['image'];
@@ -95,7 +95,7 @@
                 ));
                 $url = $url . '?' . $query;
                 $ch = curl_init();
-                $headers = ['API-OPR: 4sgkogww408owwgw0080woggw8wk4csc4gkwk80c'];
+                $headers = ['API-OPR: ADD_YOUR_API_KEY'];
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
                 curl_setopt($ch, CURLOPT_URL, $url);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -113,7 +113,7 @@
                 }
 
                 //Keywords Extraction
-                $api_key = '24a00253-92b5-444a-aa50-e3a2fdc0d9cc';
+                $api_key = 'ADD_YOUR_API_KEY';
                 $api_endpoint = 'https://api.builtwith.com/kw2/api.json?KEY=' . $api_key . '&LOOKUP=' . $inpUrl;
                 $response = file_get_contents($api_endpoint);
                 $data = json_decode($response, true);
@@ -297,8 +297,8 @@
                                 return true;
                             }
                             if (!empty($keyword)) {
-                                $apiKey = 'AIzaSyAEcDBAVLiS5N6C0iLbhS8tYY1JbE3-pN0';
-                                $searchEngineId = '768a32dc799a54383';
+                                $apiKey = 'ADD_YOUR_API_KEY';
+                                $searchEngineId = 'ADD_YOUR_SEARCH_ENGINE_KEY';
                                 $numResultsPerPage = 10;
                                 $currentPage = 1;
                                 checkKeywordRank($apiKey, $searchEngineId, $keyword, $numResultsPerPage, $currentPage);
