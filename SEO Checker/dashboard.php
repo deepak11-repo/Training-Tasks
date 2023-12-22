@@ -257,51 +257,69 @@
                                 </form>
                             </div>
                         </div>
+<!-- 						Here i have set the website to search for the keyword to identify the website's rank - wisdmlabs.com -->
                         <?php
                         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["form2_submit"])) {
                             $keyword = isset($_POST['keywordInput']) ? $_POST['keywordInput'] : '';
-                            function checkKeywordRank($apiKey, $searchEngineId, $keyword, $numResultsPerPage = 10, $currentPage = 1)
+                            function checkKeywordRank($apiKey, $searchEngineId, $websiteToCheck, $keyword, $numResultsPerPage = 10, $totalResults = 100)
                             {
-                                $startIndex = ($currentPage - 1) * $numResultsPerPage + 1;
-                                $url = "https://www.googleapis.com/customsearch/v1?q=" . urlencode($keyword) . "&cx=$searchEngineId&key=$apiKey&start=$startIndex&num=$numResultsPerPage";
-                                $response = file_get_contents($url);
-                                if ($response === false) {
-                                    echo "Error fetching search results.\n";
-                                    return false;
-                                }
-                                $data = json_decode($response, true);
-                                if (isset($data['error'])) {
-                                    echo "API Error: " . $data['error']['message'] . "\n";
-                                    return false;
-                                }
-                                $items = $data['items'];
-                                if (empty($items)) {
-                                    echo "No search results found for the keyword.\n";
-                                    return false;
-                                }
+                                $numPages = ceil($totalResults / $numResultsPerPage);
+                                $found = false;
                                 echo '<div style="width:85%; margin:auto;">';
                                 echo '<table class="table table-hover">';
                                 echo '<thead>';
                                 echo '<tr><th scope="col">Rank</th><th scope="col">Title</th><th scope="col">Link</th></tr>';
                                 echo '</thead>';
                                 echo '<tbody>';
-                                foreach ($items as $index => $item) {
-                                    $rank = $startIndex + $index;
-                                    $title = $item['title'];
-                                    $link = $item['link'];
-                                    echo "<tr><td>$rank</td><td>$title</td><td><a href='$link' target='_blank'>$link</a></td></tr>";
+                                for ($currentPage = 1; $currentPage <= $numPages; $currentPage++) {
+                                    $startIndex = ($currentPage - 1) * $numResultsPerPage + 1;
+                                    $url = "https://www.googleapis.com/customsearch/v1?q=" . urlencode($keyword) . "&cx=$searchEngineId&key=$apiKey&start=$startIndex&num=$numResultsPerPage";
+                                    $response = file_get_contents($url);
+                                    if ($response === false) {
+                                        echo "Error fetching search results.\n";
+                                        return false;
+                                    }
+                                    $data = json_decode($response, true);
+                                    if (isset($data['error'])) {
+                                        echo "API Error: " . $data['error']['message'] . "\n";
+                                        return false;
+                                    }
+                                    if (!isset($data['items'])) {
+                                        // echo "No items found in the response.\n";
+                                        break; 
+                                    }
+                                    $items = $data['items'];
+                                    if (empty($items)) {
+                                        break;
+                                    }
+                                    foreach ($items as $index => $item) {
+                                        $rank = $startIndex + $index;
+                                        $title = $item['title'];
+                                        $link = $item['link'];
+                                        if (strpos($link, $websiteToCheck) !== false) {
+                                            echo "<tr><td>$rank</td><td>$title</td><td><a href='$link' target='_blank'>$link</a></td></tr>";
+                                            $found = true;
+                                        }
+                                        if ($rank >= $totalResults) {
+                                            break 2;
+                                        }
+                                    }
                                 }
                                 echo '</tbody>';
                                 echo '</table>';
                                 echo '</div>';
+                                if (!$found) {
+                                    echo "No search results found for the keyword on the specified website.\n";
+                                }
                                 return true;
                             }
                             if (!empty($keyword)) {
                                 $apiKey = 'ADD_YOUR_API_KEY';
-                                $searchEngineId = 'ADD_YOUR_SEARCH_ENGINE_KEY';
+                                $searchEngineId = 'ADD_YOUR_SEARCH_ENGINE_ID';
+                                $websiteToCheck = 'wisdmlabs.com'; //You can change the website as per your preferences
                                 $numResultsPerPage = 10;
-                                $currentPage = 1;
-                                checkKeywordRank($apiKey, $searchEngineId, $keyword, $numResultsPerPage, $currentPage);
+                                $totalResults = 100;
+                                checkKeywordRank($apiKey, $searchEngineId, $websiteToCheck, $keyword, $numResultsPerPage, $totalResults);
                             }
                         }
                         ?>
@@ -310,11 +328,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
 
 </body>
 
